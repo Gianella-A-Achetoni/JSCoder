@@ -1,168 +1,143 @@
-
-//Personajes 
-const personajes = ["Tanjiro Kamado", "Zenitzu Agatsama", "Inosuke Hashibira" ];
+// Personajes y enemigos
+const personajes = ["Tanjiro Kamado", "Zenitzu Agatsama", "Inosuke Hashibira"];
 const enemigos = ["Akaza", "Daki", "Doma"];
 
-//Menu
-const menuJuego = `Ingresa el número de la opción:
-1- Juego
-2- Reglas
-3- Salir
-`
-const menuPersonajes = `Escribe el número correspondiente a el personaje que desees elegir:
-        1- Tanjiro Kamado
-        2- Zenitzu Agatsama
-        3- Inosuke Hashibira
-`
-const menuEnemigos = `Escribe el número correspondiente a el personaje que desees combatir: 
-        1- Akaza
-        2- Daki
-        3- Doma
-`
+const ataques = {
+  "Tanjiro Kamado": ["Respiración del agua 1", "Respiración del agua 2", "Danza sagrada del sol"],
+  "Zenitzu Agatsama": ["Respiración del rayo 1", "Respiración del rayo combinada", "Dios del trueno"],
+  "Inosuke Hashibira": ["Respiración de la bestia 1", "Respiración de la bestia 2", "Respiración de la bestia 3"],
+};
 
-// ataques
+const ataquesEnemigo = ["Sangre demoniaca 1", "Sangre demoniaca 2", "Sangre demoniaca 3"];
 
-const ataqueTanjiro = {
-        ataque1:"Primera postura respiración del agua",
-        ataque2:"Segunda postura respiración del agua",
-        ataque3:"Danza sagrada del sol"
+const reglas = `
+Primero elige un personaje y un enemigo.
+Cada ronda debes seleccionar un ataque.
+El enemigo responderá con una técnica.
+El ataque más fuerte gana. El que pierde 3 vidas, pierde la batalla.
+`;
+
+// Elementos del DOM
+const btnJugar = document.getElementById("btnJugar");
+const btnReglas = document.getElementById("btnReglas");
+const seccionJuego = document.getElementById("juego");
+const seccionBatalla = document.getElementById("batalla");
+const seccionReglas = document.getElementById("reglas");
+const personajeSelect = document.getElementById("personajeSelect");
+const enemigoSelect = document.getElementById("enemigoSelect");
+const btnComenzar = document.getElementById("btnComenzar");
+const ataquesDiv = document.getElementById("ataques");
+const infoRonda = document.getElementById("infoRonda");
+const vidasDiv = document.getElementById("vidas");
+const resultadoDiv = document.getElementById("resultado");
+const textoReglas = document.getElementById("textoReglas");
+
+// Inicializar selects
+personajes.forEach((p, i) => {
+  const opt = document.createElement("option");
+  opt.value = i;
+  opt.textContent = p;
+  personajeSelect.appendChild(opt);
+});
+
+enemigos.forEach((e, i) => {
+  const opt = document.createElement("option");
+  opt.value = i;
+  opt.textContent = e;
+  enemigoSelect.appendChild(opt);
+});
+
+// Variables de juego
+let jugador, enemigo, vidasP1, vidasP2, ronda;
+
+// Eventos
+btnJugar.addEventListener("click", () => {
+  seccionJuego.classList.remove("oculto");
+  seccionReglas.classList.add("oculto");
+  seccionBatalla.classList.add("oculto");
+});
+
+btnReglas.addEventListener("click", () => {
+  textoReglas.textContent = reglas;
+  seccionReglas.classList.remove("oculto");
+  seccionJuego.classList.add("oculto");
+  seccionBatalla.classList.add("oculto");
+});
+
+btnComenzar.addEventListener("click", () => {
+  jugador = personajes[personajeSelect.value];
+  enemigo = enemigos[enemigoSelect.value];
+  vidasP1 = 3;
+  vidasP2 = 3;
+  ronda = 1;
+
+  mostrarAtaques(jugador);
+  actualizarEstado();
+
+  seccionBatalla.classList.remove("oculto");
+  seccionJuego.classList.add("oculto");
+});
+
+// Funciones
+function mostrarAtaques(personaje) {
+  ataquesDiv.innerHTML = "";
+  ataques[personaje].forEach((ataque, index) => {
+    const btn = document.createElement("button");
+    btn.textContent = ataque;
+    btn.addEventListener("click", () => jugarRonda(index + 1));
+    ataquesDiv.appendChild(btn);
+  });
 }
 
-const ataqueZenitsu = {
-        ataque1:"Primera postura respiración del rayo",
-        ataque2:"Primera postura convinada respiración del rayo",
-        ataque3:"Septima postura dios del trueno"
+function obtenerAtaqueEnemigo(ronda, ataqueJugador) {
+  return (ronda % 2 === 0) ? (ataqueJugador === 3 ? 1 : ataqueJugador + 1)
+                           : (ataqueJugador === 1 ? 3 : ataqueJugador - 1);
 }
 
-const ataqueInosuke = {
-        ataque1:"Primera postura respiración de la bestia",
-        ataque2:"Segunda postura respiración de la bestia",
-        ataque3:"Tercera postura respiración de la bestia"
+function jugarRonda(ataqueElegido) {
+  const ataqueJugador = ataques[jugador][ataqueElegido - 1];
+  const numeroAtaqueEnemigo = obtenerAtaqueEnemigo(ronda, ataqueElegido);
+  const ataqueEnemigo = ataquesEnemigo[numeroAtaqueEnemigo - 1];
+
+  let resultado = "";
+  if (ataqueElegido > numeroAtaqueEnemigo) {
+    vidasP2--;
+    resultado = `Ganaste esta ronda 🎉 ${enemigo} pierde una vida.`;
+  } else if (ataqueElegido < numeroAtaqueEnemigo) {
+    vidasP1--;
+    resultado = `Perdiste esta ronda 😢 ${jugador} pierde una vida.`;
+  } else {
+    resultado = "¡Empate!";
+  }
+
+  resultadoDiv.textContent = `${jugador} usó ${ataqueJugador} | ${enemigo} usó ${ataqueEnemigo} → ${resultado}`;
+  ronda++;
+  actualizarEstado();
+
+  guardarPartida();
+  verificarFin();
 }
 
-const ataqueDemonio = {
-        ataque1:"Primera tecnica de sangre demoniaca",
-        ataque2:"Segunda tecnica de sangre demoniaca",
-        ataque3:"Tercera tecnica de sangre demoniaca",
+function actualizarEstado() {
+  infoRonda.textContent = `Ronda ${ronda}`;
+  vidasDiv.textContent = `Vidas ${jugador}: ${vidasP1} | Vidas ${enemigo}: ${vidasP2}`;
 }
 
-//Reglas
-const reglas = `//REGLAS//
-Primero deberas elegir un personaje para jugar, luego otro contra el que vas a combatir.
-Luego en cada partida deberas elegir un ataque entre las respiraciones de cada personaje.
-El cual resibira como respuesta una tecnica de sangre demoniaca del enemigo.
-La tecnica más fuerte gana y el perdedor perdera una de sus tres vidas,
-el primero en quedarse sin vidas sera el PERDEDOR.
-La vista de las reglas permanece en consola aunque puedes pedir verlas de nuevo.
-`
-function obtenerAtaqueEnemigo(ataqueJugador, ronda) {
-    if (ronda % 2 === 0) {
-        // Ronda par → enemigo elige uno más (ciclo hasta 1 si es 3)
-        return ataqueJugador === 3 ? 1 : ataqueJugador + 1;
-    } else {
-        // Ronda impar → enemigo elige uno menos (ciclo hasta 3 si es 1)
-        return ataqueJugador === 1 ? 3 : ataqueJugador - 1;
-    }
+function verificarFin() {
+  if (vidasP1 === 0 || vidasP2 === 0) {
+    const mensaje = vidasP1 === 0 ? `${jugador} fue derrotado 😢` : `¡Ganaste! Venciste a ${enemigo} 🎉`;
+    alert(mensaje);
+    seccionBatalla.classList.add("oculto");
+  }
 }
 
-function jugar(jugador, enemigo) {
-    let ronda = 1;
-    let vidasP1 = 3;
-    let vidasP2 = 3;
-
-    const personaje = personajes[jugador - 1];
-    const enemigoNombre = enemigos[enemigo - 1];
-
-    let ataques;
-    switch (personaje) {
-        case "Tanjiro Kamado":
-            ataques = ataqueTanjiro;
-            break;
-        case "Zenitzu Agatsama":
-            ataques = ataqueZenitsu;
-            break;
-        case "Inosuke Hashibira":
-            ataques = ataqueInosuke;
-            break;
-    }
-
-    alert(`Has elegido a ${personaje}. Vas a combatir contra ${enemigoNombre}. ¡Buena suerte!`);
-
-    while (vidasP1 > 0 && vidasP2 > 0) {
-        const ataqueElegido = parseInt(prompt(`
-        Ronda ${ronda}
-        Elige tu ataque:
-        1 - ${ataques.ataque1}
-        2 - ${ataques.ataque2}
-        3 - ${ataques.ataque3}
-        `));
-
-        if (![1, 2, 3].includes(ataqueElegido)) {
-            alert("Ataque inválido. Intenta de nuevo.");
-            continue;
-        }
-
-        const ataqueJugador = ataques[`ataque${ataqueElegido}`];
-        const numeroAtaqueEnemigo = obtenerAtaqueEnemigo(ataqueElegido, ronda);
-        const ataqueEnemigoTexto = ataqueDemonio[`ataque${numeroAtaqueEnemigo}`];
-
-        alert(`${personaje} usó: ${ataqueJugador}`);
-        alert(`${enemigoNombre} respondió con: ${ataqueEnemigoTexto}`);
-
-        if (ataqueElegido > numeroAtaqueEnemigo) {
-            vidasP2--;
-            alert(`¡Ganaste esta ronda! ${enemigoNombre} pierde una vida. Vidas restantes: ${vidasP2}`);
-        } else if (ataqueElegido < numeroAtaqueEnemigo) {
-            vidasP1--;
-            alert(`¡Perdiste esta ronda! ${personaje} pierde una vida. Vidas restantes: ${vidasP1}`);
-        } else {
-            alert("¡Empate! Nadie pierde una vida esta ronda.");
-        }
-
-        ronda++;
-    }
-
-    if (vidasP1 === 0) {
-        alert(`¡Oh no! ${personaje} fue derrotado. 😢`);
-    } else {
-        alert(`¡Felicitaciones! Venciste a ${enemigoNombre}. 🎉`);
-    }
+function guardarPartida() {
+  const partida = {
+    jugador,
+    enemigo,
+    vidasP1,
+    vidasP2,
+    ronda
+  };
+  localStorage.setItem("ultimaPartida", JSON.stringify(partida));
 }
-
-
-
-
-function menu(option){
-
-        switch (option) {
-                case 1:
-                        const jugador = parseInt(prompt(menuPersonajes));
-                        const enemigo = parseInt(prompt(menuEnemigos));
-                        jugar(jugador,enemigo);
-                        break;
-                case 2:
-                        alert(reglas)
-                        break;
-                default:
-                        break;
-        }
-}
-
-let opcion
-
-alert("Bienvenido al juego donde cazaras demonios!!!");
-alert(reglas)
-console.log(reglas)
-
-while (opcion !== 3) {
-    opcion = parseInt(prompt(menuJuego));
-
-    if (isNaN(opcion) || opcion < 1 || opcion > 3) {
-        alert("Opción inválida. Por favor elegí una opción válida (1, 2 o 3).");
-        continue; // vuelve al inicio del ciclo
-    }
-
-    menu(opcion);
-}
-
-alert("Fin del juego")

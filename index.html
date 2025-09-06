@@ -1,12 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juego</title>
+    <title>Simulador Demon Slayer</title>
+    <link rel="stylesheet" href="./css/style.css">
     <script src="./js/app.js" defer></script>
 </head>
 <body>
+    <h1>Juego de Demon Slayer</h1>
+
+    <section id="menu">
+        <button id="btnJugar">Jugar</button>
+        <button id="btnReglas">Ver reglas</button>
+    </section>
+
+    <section id="juego" class="oculto">
+        <h2>Selecciona tu personaje</h2>
+        <select id="personajeSelect"></select>
+
+        <h2>Selecciona tu enemigo</h2>
+        <select id="enemigoSelect"></select>
+
+        <button id="btnComenzar">Comenzar Batalla</button>
+    </section>
+
+    <section id="batalla" class="oculto">
+        <h2 id="infoRonda"></h2>
+        <p id="vidas"></p>
+
+        <h3>Elige tu ataque:</h3>
+        <div id="ataques"></div>
+
+        <div id="resultado"></div>
+    </section>
+
+    <section id="reglas" class="oculto">
+        <h2>Reglas del Juego</h2>
+        <p id="textoReglas"></p>
+    </section>
+
     
 </body>
 </html>
