@@ -1,44 +1,64 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Simulador Demon Slayer</title>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cafeteria</title>
     <link rel="stylesheet" href="./css/style.css">
     <script src="./js/app.js" defer></script>
-</head>
-<body>
-    <h1>Juego de Demon Slayer</h1>
-
-    <section id="menu">
-        <button id="btnJugar">Jugar</button>
-        <button id="btnReglas">Ver reglas</button>
-    </section>
-
-    <section id="juego" class="oculto">
-        <h2>Selecciona tu personaje</h2>
-        <select id="personajeSelect"></select>
-
-        <h2>Selecciona tu enemigo</h2>
-        <select id="enemigoSelect"></select>
-
-        <button id="btnComenzar">Comenzar Batalla</button>
-    </section>
-
-    <section id="batalla" class="oculto">
-        <h2 id="infoRonda"></h2>
-        <p id="vidas"></p>
-
-        <h3>Elige tu ataque:</h3>
-        <div id="ataques"></div>
-
-        <div id="resultado"></div>
-    </section>
-
-    <section id="reglas" class="oculto">
-        <h2>Reglas del Juego</h2>
-        <p id="textoReglas"></p>
-    </section>
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.23.0/dist/sweetalert2.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  </head>
+  <body>
     
-</body>
+    <header>
+        <nav class="navbar marron">
+            <div class="container-fluid">
+                <a class="navbar-brand">Cafe Rico</a> 
+                <div id="cart">
+                    <button  class="btn btn-outline-success me-2 d-flex" type="button">
+                        <img src="./img/carrito-de-compras.png" style="width: 30px;" alt="carrito">
+                        <p id="number"></p>
+                    </button>
+                </div>
+                
+            </div>
+        </nav>
+    </header>
+    
+    <main class="marroncito">
+        <div class="d-flex gap-4 position-relative marroncito">
+            <div class="position-absolute top-0 start-0 p-4">
+                <div class="position-absolute top-0 start-0 p-4">
+                    <select id="filtroCategoria" class="form-select marroncito" style="width:200px; border-color:#1f8b1f ; color: #1f8b1f ;">
+                        <option value="all">Todas las categorías</option>
+                        <option value="cafe">Café</option>
+                        <option value="dona">Dona</option>
+                        <option value="hamburguesa">Hamburguesa</option>
+                        <option value="pastel">Pastel</option>
+                        <option value="pizza">Pizza</option>
+                    </select>
+                </div>
+            </div>
+            <div class="position-absolute top-0 end-0 p-4">
+                <form class="d-flex" id="formBusqueda" role="search">
+                    <input class="form-control me-2" id="buscador" type="search" placeholder="Buscar" aria-label="Search" style="background-color: #F5ECD5 !important; border-color:#1f8b1f ;"/>
+                    <button class="btn btn-outline-success" type="submit">Buscar</button>
+                </form>
+            </div>
+        </div>
+        <div class="container py-5 mt-5 ">
+            <div class="row g-4" id="card"></div>
+        </div>
+    </main>
+
+    <footer>
+        <p></p>
+    </footer>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.23.0/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+  </body>
 </html>
